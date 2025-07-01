@@ -28,20 +28,87 @@ import PortfolioPoda from './pages/Portofolio/PortofolioPoda/PortofolioPoda.jsx'
 
 
 function App() {
+  document.title = "Nebulix";
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+    return () => clearTimeout(timer);
   }, []);
+
+  if (loading) {
+    return <BlackholeLoader />;
+  }
 
   return (
     <ThemeProvider>
-      <div className="app">
-        <ConstellationCanvas />
-        <ShootingStars />
-        <Navbar />
-        <Hero /> 
-        <Articles />
-        <Footer />
-      </div>
+      <AuthProvider>
+        <Router>
+          <RouteChangeLoader>
+            <div className="app">
+              <CursorGlow />
+              <ConstellationCanvas />
+              <ShootingStars />
+              <Navbar />
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <Hero />
+                      <Articles />
+                      <Footer />
+                    </>
+                  }
+                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route
+                  path="/articles"
+                  element={
+                    <PrivateRoute>
+                      <ArticlesPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <PrivateRoute>
+                      <UserProfile />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/aboutus"
+                  element={
+                    <PrivateRoute>
+                      <AboutUs />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                path='/jasswant' element={<PortfolioJasswant />}
+                />
+                <Route
+                path='/alfrido' element={<PortfolioAlfrido />}
+                />
+                <Route
+                path='/agnes' element={<PortfolioAgnes />}
+                />
+                <Route
+                path='/poda' element={<PortfolioPoda />}
+                />
+
+              </Routes>
+              
+            </div>
+          </RouteChangeLoader>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
